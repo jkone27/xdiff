@@ -23,7 +23,7 @@ namespace SampleApplication
             var bX = XmlDiffUtils.xelToDomain(b.Root, Types.XmlNode.Empty);
 
             //TODO: --> expose easier types for C# client
-            var diffs = XmlDiffUtils.MakeDiff(aX,bX)
+            var diffs = XmlDiffUtils.MakeDiff(aX, bX, null);
         }
     }
 }
