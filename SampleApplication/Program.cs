@@ -15,15 +15,11 @@ namespace SampleApplication
     {
         static void Main(string[] args)
         {
-            var a = XDocument.Parse(File.ReadAllText("A.xml"));
-            var b = XDocument.Parse(File.ReadAllText("B.xml"));
-
-            //TODO: --> put in library
-            var aX = XmlDiffUtils.xelToDomain(a.Root, Types.XmlNode.Empty);
-            var bX = XmlDiffUtils.xelToDomain(b.Root, Types.XmlNode.Empty);
-
-            //TODO: --> expose easier types for C# client
-            var diffs = XmlDiffUtils.MakeDiff(aX, bX, null);
+            var diffs = XmlDiffUtils.ComputeDiff("A.xml", "B.xml", new string[] {});
+            Console.WriteLine("diff for A.XML vs B.XML\r\n");
+            foreach (var d in diffs)
+                Console.WriteLine(d);
+            Console.ReadKey();
         }
     }
 }

@@ -1,7 +1,3 @@
 ﻿module XDiff.XmlDiffUtils
-
-    open System.Xml.Linq
-    open Types
-
-    val getNodeName : XmlNode -> string
+    val ComputeDiff : string * string * string seq -> string seq
 

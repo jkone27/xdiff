@@ -56,8 +56,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="A.xml" />
-    <Content Include="B.xml" />
+    <Content Include="A.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="B.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
