@@ -34,55 +34,78 @@
 
 
     let private attributesDiff (attrA : Map<string,string>) (attrB: Map<string,string>) : AttributeDiff list =
-        Map.fold(fun a k v ->
+        let diffAB = ( Map.fold(fun a k v ->
             let corresponding = Map.tryFind k attrB
             match corresponding with
             |Some(v2) -> 
                 if v2 <> v then 
-                    AttributeDiff.Value({ Name = k; A = v2; B = v}) :: a
+                    AttributeDiff.Value({ Name = k; A = Some(v2); B = Some(v)}) :: a
                 else
                     a
             |None -> 
-                AttributeDiff.Missing(k) :: a
-            ) [] attrA
+                AttributeDiff.Missing({ Name = k; A = Some(v); B = None}) :: a
+            ) [] attrA ) |> Set.ofList
+        in
+        let diffBA = ( Map.fold(fun a k v ->
+            let corresponding = Map.tryFind k attrA
+            match corresponding with
+            |Some(v2) -> 
+                if v2 <> v then 
+                    AttributeDiff.Value({ Name = k; A = Some(v2); B = Some(v)}) :: a
+                else
+                    a
+            |None -> 
+                AttributeDiff.Missing({ Name = k; A = Some(v); B = None}) :: a
+            ) [] attrB ) |> Set.ofList
+        let resulting = diffAB |> Set.union diffBA |> Set.toList
+        resulting
+
+    let findChildNames childs =
+        childs |> Seq.map getNodeName |> Set.ofSeq
+
+    let findDifferentChilds childsA childsB =
+        let childNamesA = findChildNames childsA
+        let childNamesB = findChildNames childsB
+        let exA = ((childNamesA, childNamesB) ||> Set.difference) 
+        let exB = ((childNamesB, childNamesA) ||> Set.difference)
+        in (exA, exB) 
+
+    let attributeDiffs nameA attributesA attributesB =
+        let ads = attributesDiff attributesA attributesB
+        match ads.IsEmpty with
+        |false -> [Attribute(nameA, ads)]
+        |true -> []
+
+    let childNodeDifference nameA childsA nameB childsB =
+        let extraA, extraB = findDifferentChilds childsA childsB
+        let missingsA = extraA |> Set.map (fun a -> NodeDiff.Missing({ Name = nameB; A = Some(a); B = None })) |> Set.toList
+        let missingsB = extraB |> Set.map (fun b -> NodeDiff.Missing({ Name = nameA; A = None; B = Some(b) })) |> Set.toList
+        let childsANew = childsA |> Seq.filter(fun c -> not (extraA |> Set.contains (getNodeName c)) ) |> Seq.toList
+        let childsBNew = childsB |> Seq.filter(fun c -> not (extraB |> Set.contains (getNodeName c)) ) |> Seq.toList
+        (missingsA, childsANew), (missingsB, childsBNew)
 
     let rec private MakeDiff (ab : XmlNode * XmlNode) (results: NodeDiff list) : NodeDiff list =
         let a, b = ab in 
-        match (a, b) with
+        match ab with
         |(Node(nameA,attributesA,childsA), Node(nameB,attributesB,childsB)) ->
-            let nameDiff = 
-                match nameA <> nameB with 
-                |true -> [Name({ Name = nameA; A = nameA; B = nameB})]
-                |false -> []
-            let ads = attributesDiff attributesA attributesB
-            let attrDiff = 
-                match ads.IsEmpty with
-                |false -> [Attribute(nameA, ads)]
-                |true -> []
-            let newRes = nameDiff @ attrDiff @ results
-            (childsA, childsB) ||> Seq.zip |> Seq.fold(fun a ab -> MakeDiff ab a) newRes
+            let attrDiff = attributeDiffs nameA attributesA attributesB
+            let  (missingsA, childsANew), (missingsB, childsBNew) = childNodeDifference nameA childsA nameB childsB
+            let newRes = attrDiff @ results @ missingsA @ missingsB
+            (childsANew,childsBNew) ||> Seq.zip |> Seq.fold(fun a ab -> MakeDiff ab a) newRes
         |(Leaf(nameA,attributesA,valueA),Leaf(nameB,attributesB,valueB)) ->
-            let nameDiff = 
-                match nameA <> nameB with 
-                |true -> [Name({ Name = nameA; A = nameA; B = nameB})]
-                |false -> []
-            let ads = attributesDiff attributesA attributesB
-            let attrDiff = 
-                match ads.IsEmpty with
-                |false -> [Attribute(nameA, ads)]
-                |true -> []
+            let attrDiff = attributeDiffs nameA attributesA attributesB
             let leafDiff = 
                 match valueA <> valueB with
-                |true -> [NodeDiff.Value({ Name = nameA; A = valueA; B = valueB})]
+                |true -> [NodeDiff.Value({ Name = nameA; A = Some(valueA); B = Some(valueB)})]
                 |false -> []   
-            nameDiff @ attrDiff @ leafDiff @ results
+            attrDiff @ leafDiff @ results
         |(Empty,Empty) -> results
         |_ -> 
             match (a,b) with
-            |Node(name,_,_),_ 
-            |Leaf(name,_,_),_ 
-            |_,Node(name,_,_) 
-            |_,Leaf(name,_,_) -> Missing(name) :: results
+            |Node(name,_,_),Empty 
+            |Leaf(name,_,_),Empty -> Missing({ Name = name; A = Some(name); B = None }) :: results
+            |Empty,Node(name,_,_) 
+            |Empty,Leaf(name,_,_) -> Missing({ Name = name; A = None; B = Some(name) }) :: results
             |_ -> failwith "empty node"
 
     let private filterDiffs diffs excludedNodes =
@@ -90,8 +113,8 @@
             diffs with Diffs = diffs.Diffs 
                         |> List.filter (fun x -> 
                             match x with
-                            |Name(x) 
-                            |Value(x) -> not (excludedNodes |> Seq.contains x.Name)
+                            |Missing(diff) -> not (excludedNodes |> Seq.contains diff.Name)
+                            |Value(z) -> not (excludedNodes |> Seq.contains z.Name)
                             |_ -> true
                         ) 
             } in
@@ -113,10 +136,9 @@
                 for r in d.Diffs do
                     let res = 
                         match r with
-                        |Name(n) -> sprintf "%A" n
-                        |Attribute(a, al) -> sprintf "%A" (a,al)
-                        |Value(v) -> sprintf "%A" v
-                        |Missing(m) -> sprintf "%A" m
+                        |Attribute(a, al) -> sprintf "attribute: %A" (a,al)
+                        |Value(v) -> sprintf "value: %A" v
+                        |Missing(diff) -> sprintf "missing: %A" diff
                     yield res
             } 
         |None -> [] |> Seq.ofList

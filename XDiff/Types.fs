@@ -1,23 +1,21 @@
 ﻿module XDiff.Types  
-    open System.Collections.Generic
 
     type internal XmlNode = 
         | Node of (string * Map<string,string> * XmlNode list) 
         | Leaf of string * Map<string,string> * string 
         | Empty
 
-    type Diff = { Name : string; A : string; B : string; }
+    type Diff = { Name : string; A : string option; B : string option; }
 
     type AttributeDiff = 
         | Value of Diff
-        | Missing of string
+        | Missing of Diff
 
     type internal AttributeDifference = { Value : Diff; Missing : System.String; }
 
     type internal NodeDiff = 
-        | Name of Diff 
         | Attribute of string * (AttributeDiff list)
         | Value of Diff 
-        | Missing of string
+        | Missing of Diff
 
     type internal FileDiff = { A : string; B : string ; Diffs : NodeDiff list }
