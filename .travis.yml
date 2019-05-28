@@ -1,6 +1,7 @@
 language: csharp
 solution: XmlDifference.sln
 dotnet: 2.0.0
+mono: none
 branches:
   only:
     - master
