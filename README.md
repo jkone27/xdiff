@@ -1,4 +1,4 @@
-# Xdiff
+# XmlDifference
 
 <img src="https://github.com/jkone27/xdiff/blob/master/Pics/dom-view.png?raw=true" width="20%" height="20%"/>
 

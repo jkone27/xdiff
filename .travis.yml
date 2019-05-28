@@ -1,5 +1,5 @@
 language: csharp
-solution: XDiff.sln
+solution: XmlDifference.sln
 dotnet: 2.0.0
 mono: none
 branches:
@@ -7,4 +7,4 @@ branches:
     - master
 script:
   - dotnet build
-  - dotnet test ./Tests
+  - dotnet test
