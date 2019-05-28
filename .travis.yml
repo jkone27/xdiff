@@ -6,5 +6,6 @@ branches:
   only:
     - master
 script:
-  - dotnet build
-  - dotnet test
+  - dotnet build /XmlDifference/XmlDifference.csproj
+  - dotnet build /XmlDifference.Test/XmlDifference.Test.csproj
+  - dotnet test /XmlDifference.Test
