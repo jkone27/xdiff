@@ -15,7 +15,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/jkone27/xdiff/master/Pics/xmlico.png</PackageIconUrl>
     <Copyright>Copyright jkone 2017</Copyright>
     <PackageTags>xml,diff,extensive markup,difference,F#,.net</PackageTags>
-    <PackageLicenceExpression>MIT</PackageLicenceExpression>
+    <PackageLicenseFile>Licence.md</PackageLicenseFile>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Types.fs" />
@@ -23,5 +23,6 @@
     <Compile Include="Attribute.fs" />
     <Compile Include="Difference.fs" />
     <Compile Include="DiffExtensions.fs" />
+    <None Include="..\Licence.md" Pack="true" PackagePath="$(PackageLicenseFile)"/>
   </ItemGroup>
 </Project>

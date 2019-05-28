@@ -5,7 +5,11 @@
 A simple fsharp xml diff
 
 ```csharp
-var diffs = XmlDiffUtils.ComputeDiff("A.xml", "B.xml", new string[] {});
+
+//workaround for F# limitation in extension methods..
+using static XmlDifference.DiffExtensions.DifferenceExtension;
+
+var diffs = "A.xml".Difference("B.xml");
 foreach (var d in diffs)
     Console.WriteLine(d);
 ```
