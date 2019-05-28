@@ -122,13 +122,10 @@
         |[] -> None
         |_ -> Some(d)
 
-    let private fromFileNameToXmlNode fileName =
-        xelToDomain (XDocument.Parse(IO.File.ReadAllText(fileName)).Root) XmlNode.Empty
-
-    let ComputeDiff (a : string, b : string, excludedNodes : string seq) : string seq =
-        let rootA = fromFileNameToXmlNode a
-        let rootB = fromFileNameToXmlNode b 
-        let diffs = { A = a; B = b; Diffs = MakeDiff (rootA, rootB) [] }
+    let Diff ((aname,a) : string * XElement, (bname,b) : string * XElement, excludedNodes : string seq) : string seq =
+        let rootA = xelToDomain a XmlNode.Empty
+        let rootB = xelToDomain b XmlNode.Empty
+        let diffs = { A = aname; B = bname; Diffs = MakeDiff (rootA, rootB) [] }
         let filtered = filterDiffs diffs excludedNodes
         match filtered with
         |Some(d) ->
@@ -142,3 +139,13 @@
                     yield res
             } 
         |None -> [] |> Seq.ofList
+
+    let LoadXmlDocument fileName =
+        XDocument.Parse(IO.File.ReadAllText(fileName)).Root
+
+    let FilesDiff (a : string, b : string, excludedNodes : string seq) : string seq =
+        let rootA = LoadXmlDocument a
+        let rootB = LoadXmlDocument b 
+        Diff ((a,rootA),(b,rootB),excludedNodes)
+
+    

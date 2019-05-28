@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.452
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{CABB20DF-0824-43C6-84F7-C7A0538ABD74}"
-	ProjectSection(SolutionItems) = preProject
-		paket.dependencies = paket.dependencies
-	EndProjectSection
-EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "XDiff", "XDiff\XDiff.fsproj", "{8BE802F6-BE63-4702-AA9E-91FD4DFCD0ED}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleApplication", "SampleApplication\SampleApplication.csproj", "{4ABE1532-485D-4CAD-9D47-BA94906B6B6C}"
+EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "XDiff.Test", "XDiff.Test\XDiff.Test.fsproj", "{6470AD38-BDF5-453C-B007-C3BDD4788164}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,8 +23,15 @@ Global
 		{4ABE1532-485D-4CAD-9D47-BA94906B6B6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4ABE1532-485D-4CAD-9D47-BA94906B6B6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4ABE1532-485D-4CAD-9D47-BA94906B6B6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6470AD38-BDF5-453C-B007-C3BDD4788164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6470AD38-BDF5-453C-B007-C3BDD4788164}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6470AD38-BDF5-453C-B007-C3BDD4788164}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6470AD38-BDF5-453C-B007-C3BDD4788164}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1FCB3F95-DC17-4277-A2CE-43760AF31DF3}
 	EndGlobalSection
 EndGlobal

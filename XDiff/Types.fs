@@ -1,5 +1,7 @@
 ﻿module XDiff.Types  
 
+open System.Xml.Linq
+
     type internal XmlNode = 
         | Node of (string * Map<string,string> * XmlNode list) 
         | Leaf of string * Map<string,string> * string 
@@ -17,5 +19,16 @@
         | Attribute of string * (AttributeDiff list)
         | Value of Diff 
         | Missing of Diff
+
+
+    type LoadedDocument = {
+        Name : string;
+        Content : XElement
+    }
+
+    type DiffRequest = {
+        A : LoadedDocument;
+        B : LoadedDocument
+    }
 
     type internal FileDiff = { A : string; B : string ; Diffs : NodeDiff list }

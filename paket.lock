@@ -1,4 +1,0 @@
-STRATEGY: MAX
-NUGET
-  remote: https://www.nuget.org/api/v2
-    System.Xml.Linq (3.5.21022.801)

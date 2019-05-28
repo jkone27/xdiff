@@ -1,8 +1,9 @@
 language: csharp
 solution: XDiff.sln
-install:
-  - mono ./.paket/paket.bootstrapper.exe
-  - mono ./.paket/paket.exe restore
+dotnet: 2.0.0
+branches:
+  only:
+    - master
 script:
-  - xbuild XDiff.sln
-  # - mono ./packages/xunit.runner.console/tools/xunit.console.exe ./XDiff.Tests/bin/Debug/XDiff.Tests.dll
+  - dotnet build
+  - dotnet test ./Tests
