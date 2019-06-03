@@ -2,7 +2,7 @@
 
 <img src="https://github.com/jkone27/xdiff/blob/master/Pics/dom-view.png?raw=true" width="20%" height="20%"/>
 
-A simple fsharp xml diff
+A simple fsharp xml diff that you can call from C#
 
 ```csharp
 
