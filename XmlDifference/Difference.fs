@@ -63,10 +63,11 @@
         |_ -> true
 
     let private filterDiffs diffs excludedNodes =
-        let d = 
-            { diffs with Diffs = 
-                diffs.Diffs |> List.filter (fun x -> nodeDiffFilter x excludedNodes) 
-            } in
+
+        let newL = diffs.Diffs |> List.filter (fun x -> nodeDiffFilter x excludedNodes) 
+
+        let d = { diffs with Diffs = newL }
+        
         match d.Diffs with
         |[] -> None
         |_ -> Some(d)
