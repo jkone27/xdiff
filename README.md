@@ -18,5 +18,3 @@ foreach (var d in diffs)
 
 
 ### Status
-[![Build Status](https://img.shields.io/travis/jkone27/xdiff.svg)](https://travis-ci.org/jkone27/xdiff)
-
